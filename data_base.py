@@ -73,4 +73,3 @@ class DataBase:
                 print(room)
 
 
-DataBase().get_free_rooms('2023-10-13', '2023-10-23')
