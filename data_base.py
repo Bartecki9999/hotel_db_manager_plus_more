@@ -72,4 +72,27 @@ class DataBase:
             if free:
                 print(room)
 
+    def get_name_by_id(self, id: int):
+        self.cur.execute('SELECT first_name, last_name FROM customers WHERE id = (%s)', str(id))
+        self.connection.commit()
+        result = self.cur.fetchall()
+        print(result)
+
+    def get_closest_arrivals(self):
+        self.cur.execute('SELECT cast(arrival_date as text), cast(departure_date as text),'
+                         ' first_name, last_name, room_number'
+                         ' FROM accommodations INNER JOIN customers on customers.id = accommodations.customer_id'
+                         ' WHERE arrival_date - CURRENT_DATE >= 0'
+                         ' ORDER BY arrival_date - CURRENT_DATE'
+                         ' LIMIT 10')
+        self.connection.commit()
+        result = self.cur.fetchall()
+        return result
+
+
+
+
+
+
+
 
