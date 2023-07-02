@@ -98,7 +98,9 @@ class DataBase:
         return int(result[0][0])
 
     def get_id_by_pesel(self, pesel):
-        self.cur.execute('SELECT id FROM customers WHERE pesel = (%s)', (pesel, ))
+        postgres_query = 'SELECT id FROM customers WHERE pesel = (%s)'
+        data = (pesel,)
+        self.cur.execute(postgres_query, data)
         self.connection.commit()
         result = self.cur.fetchall()
         return result[0]
