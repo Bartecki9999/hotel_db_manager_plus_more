@@ -21,10 +21,10 @@ class DataBase:
             if fine:
                 print('start\n\n')
 
-    def insert_new_customer(self, first_name, last_name):
-        postgres_query = (' INSERT INTO customers(first_name, last_name)'
-                          ' VALUES (%s,%s)')
-        record_to_insert = (first_name, last_name)
+    def insert_new_customer(self, first_name, last_name, pesel):
+        postgres_query = (' INSERT INTO customers(first_name, last_name, pesel)'
+                          ' VALUES (%s,%s,%s)')
+        record_to_insert = (first_name, last_name, pesel)
         self.cur.execute(postgres_query, record_to_insert)
         self.connection.commit()
 
@@ -42,10 +42,10 @@ class DataBase:
         self.cur.execute(postgres_query, record_to_delete)
         self.connection.commit()
 
-    def insert_new_accommodation(self, arrival_date, departure_date, customer_id, room_number):
-        postgres_query = (' INSERT INTO accommodations(arrival_date, departure_date,customer_id, room_number)'
-                          ' VALUES (%s,%s,%s,%s)')
-        record_to_insert = (arrival_date, departure_date, customer_id, room_number)
+    def insert_new_accommodation(self, arrival_date, departure_date, customer_id, room_number, paid):
+        postgres_query = (' INSERT INTO accommodations(arrival_date, departure_date,customer_id, room_number, paid)'
+                          ' VALUES (%s,%s,%s,%s,%s)')
+        record_to_insert = (arrival_date, departure_date, customer_id, room_number, paid)
         self.cur.execute(postgres_query, record_to_insert)
         self.connection.commit()
 
@@ -80,19 +80,29 @@ class DataBase:
 
     def get_closest_arrivals(self):
         self.cur.execute('SELECT cast(arrival_date as text), cast(departure_date as text),'
-                         ' first_name, last_name, room_number'
+                         ' first_name, last_name, room_number, cast(paid as text)'
                          ' FROM accommodations INNER JOIN customers on customers.id = accommodations.customer_id'
                          ' WHERE arrival_date - CURRENT_DATE >= 0'
                          ' ORDER BY arrival_date - CURRENT_DATE'
-                         ' LIMIT 10')
+                         ' LIMIT 16')
         self.connection.commit()
         result = self.cur.fetchall()
         return result
 
+    def is_customers_in_db(self, pesel: str):
+        postgres_query = 'SELECT COUNT(*) FROM customers WHERE pesel = (%s)'
+        data = (pesel, )
+        self.cur.execute(postgres_query, data)
+        self.connection.commit()
+        result = self.cur.fetchall()
+        return int(result[0][0])
+
+    def get_id_by_pesel(self, pesel):
+        self.cur.execute('SELECT id FROM customers WHERE pesel = (%s)', (pesel, ))
+        self.connection.commit()
+        result = self.cur.fetchall()
+        return result[0]
 
 
-
-
-
-
+#DataBase().insert_new_accommodation('2023-10-27', '2023-10-28', )
 
