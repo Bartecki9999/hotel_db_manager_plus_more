@@ -3,6 +3,7 @@ import psycopg2
 import math
 import psycopg2.extras
 from gui.main_window import Window
+from time import sleep
 
 
 if __name__ == '__main__':

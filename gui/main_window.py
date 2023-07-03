@@ -3,6 +3,7 @@ import tkinter.font as font
 from gui.new_booking import booking_window
 from data_base import DataBase
 from tkinter import messagebox
+from time import sleep
 
 class Window:
     def __init__(self, title: str = 'Default title', size: "str XXxYY" = '10x10', is_resize: bool = False):
@@ -145,7 +146,6 @@ class Window:
 
         back()
         upcoming_bookings()
-
         self.root.mainloop()
 
 
